@@ -21,5 +21,6 @@ export type SearchRepoResponse = operations['search/repos']['responses']['200'][
 export interface RepoState {
   query?: Partial<SearchRepoQuery>;
   rows: Repository[];
+  total: number;
   loading: boolean;
 }

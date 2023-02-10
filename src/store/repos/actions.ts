@@ -1,11 +1,11 @@
 import { action, createAsyncAction } from "typesafe-actions";
-import { RepoActionType, Repository, SearchRepoQuery } from "./types";
+import { RepoActionType, Repository, RepoState, SearchRepoQuery } from "./types";
 
 export const repoSearchAction = createAsyncAction(
   RepoActionType.REPO_SEARCH_REQUEST,
   RepoActionType.REPO_SEARCH_SUCCESS,
   RepoActionType.REPO_SEARCH_FAILURE,
-)<SearchRepoQuery, Repository[], Error>();
+)<SearchRepoQuery, Partial<RepoState>, Error>();
 
 export const updateQueryAction = (
   repo: Partial<SearchRepoQuery>

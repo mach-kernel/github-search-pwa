@@ -15,7 +15,10 @@ function* repoSearchRequest(
 
     const client = new Octokit();
     const { data } = yield call(() => client.rest.search.repos(action.payload));
-    yield put(actions.repoSearchAction.success(data.items));
+    yield put(actions.repoSearchAction.success({
+      rows: data.items,
+      total: data.total_count,
+    }));
   } catch {
     globalToast({ 
       title: 'Error',

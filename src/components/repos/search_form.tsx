@@ -57,6 +57,6 @@ export default connect<SearchFormStateProps, SearchFormDispatchProps, SearchForm
     updateQuery: (
       q: Partial<SearchRepoQuery>
     ) => dispatch(repoActions.updateQueryAction(q)),
-    setRows: (...rows: Repository[]) => dispatch(repoActions.repoSearchAction.success(rows)),
+    setRows: (...rows: Repository[]) => dispatch(repoActions.repoSearchAction.success({ rows, total: 0 })),
   })
 )(SearchForm);
