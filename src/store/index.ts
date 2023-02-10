@@ -1,4 +1,4 @@
-import { Store, AnyAction, applyMiddleware } from 'redux';
+import { Store, AnyAction } from 'redux';
 
 import { all, fork } from 'redux-saga/effects';
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
