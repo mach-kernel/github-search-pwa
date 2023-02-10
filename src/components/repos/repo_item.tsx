@@ -14,13 +14,14 @@ const RepoItem: React.FunctionComponent<Repository> = ({
       <Flex alignItems='center' flexDir='row'>
         <Box mr={1}><AtSignIcon mt={-1} color='black' /></Box>
         <Box>{owner?.login}</Box>
+        <Spacer />
         <Box ml={4} mr={2}><StarIcon mt={-1} color='gold' /></Box>
         <Box>{stargazers_count}</Box>
       </Flex>
     </CardHeader>
     <CardBody>
       <Text>
-        { description }
+        { description?.slice(0, 250) }...
       </Text>
     </CardBody>
   </Card>
