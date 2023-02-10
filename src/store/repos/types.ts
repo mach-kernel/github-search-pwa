@@ -10,13 +10,16 @@ export enum RepoActionType {
   REPO_SEARCH_FAILURE = '@@repo/REPO_SEARCH_FAILURE',
 
   REPO_SEARCH_UPDATE_QUERY = '@@repo/REPO_SEARCH_UPDATE_QUERY',
+  REPO_SET_LOADING = '@@repo/REPO_SET_LOADING'
 };
 
 // From @octokit's OpenAPI schemas
-export type Repository = components["schemas"]["full-repository"];
+export type Repository = components["schemas"]['repo-search-result-item'];
 export type SearchRepoQuery = operations['search/repos']['parameters']['query'];
+export type SearchRepoResponse = operations['search/repos']['responses']['200']['content']['application/json'];
 
 export interface RepoState {
   query?: Partial<SearchRepoQuery>;
   rows: Repository[];
+  loading: boolean;
 }

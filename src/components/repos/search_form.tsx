@@ -1,5 +1,5 @@
 import * as repoActions from '@/store/repos/actions';
-import { SearchRepoQuery } from '@/store/repos/types';
+import { Repository, SearchRepoQuery } from '@/store/repos/types';
 import { Card, Divider, Heading, IconButton, Input, InputGroup, InputLeftElement, InputRightElement } from '@chakra-ui/react';
 import { CloseIcon, DeleteIcon, SearchIcon } from '@chakra-ui/icons';
 import { connect } from 'react-redux';
@@ -12,12 +12,14 @@ interface SearchFormStateProps {
 
 interface SearchFormDispatchProps {
   updateQuery: (q: Partial<SearchRepoQuery>) => ActionType<typeof repoActions.updateQueryAction>;
-  searchRequest: (q: SearchRepoQuery) => ActionType<typeof repoActions.repoSearchAction.request>;
+  setRows: (...rows: Repository[]) => ActionType<typeof repoActions.repoSearchAction.success>;
 }
 
-export type SearchFormProps = SearchFormStateProps & SearchFormDispatchProps;
+export interface SearchFormUserProps {}
 
-const SearchForm: React.FunctionComponent<SearchFormProps> = ({ currentQuery, updateQuery }) => (
+export type SearchFormProps = SearchFormStateProps & SearchFormDispatchProps & SearchFormUserProps;
+
+const SearchForm: React.FunctionComponent<SearchFormProps> = ({ currentQuery, updateQuery, setRows }) => (
   <Card w='100%' padding={25}>
     <Heading mb={1} fontWeight={400}>
       Find a repo
@@ -37,7 +39,10 @@ const SearchForm: React.FunctionComponent<SearchFormProps> = ({ currentQuery, up
       {currentQuery?.q?.length && 
       <InputRightElement
         children={<IconButton 
-                    onClick={() => updateQuery({ q: '' })}
+                    onClick={() => {
+                      updateQuery({ q: '' });
+                      setRows();
+                    }}
                     aria-label='Search database' 
                     icon={<CloseIcon />}
                   />}
@@ -46,11 +51,12 @@ const SearchForm: React.FunctionComponent<SearchFormProps> = ({ currentQuery, up
   </Card>
 );
 
-export default connect(
+export default connect<SearchFormStateProps, SearchFormDispatchProps, SearchFormUserProps, ApplicationState>(
   ({ repo }: ApplicationState) => ({ currentQuery: repo.query }),
   (dispatch) => ({ 
     updateQuery: (
       q: Partial<SearchRepoQuery>
     ) => dispatch(repoActions.updateQueryAction(q)),
+    setRows: (...rows: Repository[]) => dispatch(repoActions.repoSearchAction.success(rows)),
   })
 )(SearchForm);

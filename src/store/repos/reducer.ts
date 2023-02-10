@@ -2,7 +2,8 @@ import { Reducer } from 'redux';
 import { RepoAction, RepoActionType, RepoState } from './types';
 
 export const initialState: RepoState = {
-  rows: []
+  rows: [],
+  loading: false
 };
 
 export const reducer: Reducer<RepoState, RepoAction> = (
@@ -10,6 +11,9 @@ export const reducer: Reducer<RepoState, RepoAction> = (
   action: RepoAction,
 ) => {
   switch (action.type) {
+    case RepoActionType.REPO_SET_LOADING: {
+      return { ...state, loading: action.payload };
+    }
     case RepoActionType.REPO_SEARCH_SUCCESS: {
       return { ...state, rows: action.payload };
     }
