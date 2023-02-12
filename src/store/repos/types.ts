@@ -9,6 +9,7 @@ export enum RepoActionType {
   REPO_SEARCH_SUCCESS = '@@repo/REPO_SEARCH_SUCCESS',
   REPO_SEARCH_FAILURE = '@@repo/REPO_SEARCH_FAILURE',
 
+  REPO_SEARCH_CLEAR_QUERY = '@@repo/REPO_SEARCH_CLEAR_QUERY',
   REPO_SEARCH_UPDATE_QUERY = '@@repo/REPO_SEARCH_UPDATE_QUERY',
   REPO_SET_LOADING = '@@repo/REPO_SET_LOADING'
 };
@@ -22,5 +23,6 @@ export interface RepoState {
   query?: Partial<SearchRepoQuery>;
   rows: Repository[];
   total: number;
+  page: number;
   loading: boolean;
 }

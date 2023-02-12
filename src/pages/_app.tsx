@@ -14,7 +14,9 @@ export const globalToast = toast;
 const ColorModeToggle = () => {
   const { toggleColorMode } = useColorMode();
   return (
-    <Flex 
+    <Flex
+      position='sticky'
+      top={2}
       minW='90%' 
       m={2} 
       flexDir='column'>

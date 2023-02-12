@@ -12,3 +12,4 @@ export const updateQueryAction = (
 ) => action(RepoActionType.REPO_SEARCH_UPDATE_QUERY, repo);
 
 export const setLoading = (loading: boolean) => action(RepoActionType.REPO_SET_LOADING, loading);
+export const clearQuery = () => action(RepoActionType.REPO_SEARCH_CLEAR_QUERY);
