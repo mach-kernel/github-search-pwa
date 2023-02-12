@@ -1,13 +1,15 @@
 import { type SearchFormUserProps } from '@/components/repos/search_form'
-import { type ApplicationState } from '@/store'
+import { wrapper, type ApplicationState } from '@/store'
 import { type Repository, type SearchRepoQuery } from '@/store/repos/types'
 import { Box, Card, Center, Container, Fade, Flex, Skeleton, SlideFade, Text, Spinner, VStack } from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { connect } from 'react-redux'
 import { InView, useInView } from 'react-intersection-observer'
-import { updateQueryAction } from '@/store/repos/actions'
+import { repoSearchAction, updateQueryAction } from '@/store/repos/actions'
 import { type ActionType } from 'typesafe-actions'
+import { GetServerSideProps } from 'next'
+import { END } from 'redux-saga'
 
 const SearchForm = dynamic<SearchFormUserProps>(async () => await import('@/components/repos/search_form'))
 const RepoItem = dynamic(async () => await import('@/components/repos/repo_item'))
@@ -53,6 +55,16 @@ const Index: React.FunctionComponent<IndexProps> = ({ loading, rows, total, quer
     </Container>
   </>
 )
+
+export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps((store) => async (ctx) => {
+  console.log(ctx.query)
+  store.dispatch(updateQueryAction(ctx.query));
+  // for
+  store.dispatch(END);
+
+  await store.sagaTask?.toPromise();
+  return { props: { query: ctx.query } };
+})
 
 export default connect(
   ({ repo }: ApplicationState) => ({

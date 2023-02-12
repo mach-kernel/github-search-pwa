@@ -1,10 +1,10 @@
-import { type Store, type AnyAction } from 'redux'
+import { type Store, type AnyAction, Reducer } from 'redux'
 
 import { all, fork } from 'redux-saga/effects'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
-import createSagaMiddleware, { type Task } from '@redux-saga/core'
-import { type Context, createWrapper } from 'next-redux-wrapper'
+import createSagaMiddleware, { END, type Task } from '@redux-saga/core'
+import { type Context, createWrapper, HYDRATE } from 'next-redux-wrapper'
 
 // Repos
 import { type RepoState } from './repos/types'
@@ -14,16 +14,24 @@ import { repoSaga } from './repos/sagas'
 import { type Action } from 'typesafe-actions'
 
 export interface ApplicationState {
-  repo: RepoState
+  repo: RepoState,
+  server?: boolean,
 }
 
 export interface ApplicationStore<T, A extends Action<any>> extends Store<T, A> {
   sagaTask?: Task
 }
 
-const rootReducer = combineReducers<ApplicationState>({
-  repo: repoReducer
-})
+const rootReducer: Reducer<ApplicationState, AnyAction> = (state: ApplicationState | undefined, action: AnyAction): ApplicationState => {
+  let s = combineReducers<ApplicationState>({
+    repo: repoReducer
+  })(state, action);
+
+  // handle next-redux-wrapper 
+  if (action.type == HYDRATE) { return {...s, ...action.payload } as ApplicationState; }
+  return s;
+}
+
 
 export function * rootSaga () {
   yield all([

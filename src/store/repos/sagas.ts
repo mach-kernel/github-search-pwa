@@ -1,4 +1,4 @@
-import { RepoActionType, type SearchRepoQuery, SearchRepoResponse } from './types'
+import { RepoActionType, type SearchRepoQuery } from './types'
 import * as actions from './actions'
 import { type ActionType } from 'typesafe-actions'
 import { all, call, fork, takeEvery, debounce, put, takeLatest } from '@redux-saga/core/effects'
@@ -20,7 +20,7 @@ function * repoSearchRequest (
       total: data.total_count,
       page: action.payload.page
     }))
-  } catch {
+  } catch (e) {
     globalToast({
       title: 'Error',
       description: 'Unable to get repos',
@@ -33,7 +33,7 @@ function * repoSearchRequest (
   yield put(actions.setLoading(false))
 }
 
-function * updateQuery (
+function * fireQueryAfterUpdate (
   action: ActionType<typeof actions.updateQueryAction>
 ) {
   yield put(actions.repoSearchAction.request(action.payload as SearchRepoQuery))
@@ -42,6 +42,8 @@ function * updateQuery (
 function * updateQueryString (
   action: ActionType<typeof actions.updateQueryAction>
 ) {
+  if (!history) return;
+
   if (!action.payload.q?.length) {
     history.pushState({}, '', '/repos')
   } else {
@@ -50,21 +52,26 @@ function * updateQueryString (
       ''
     )
 
-    console.log('Updated query string', queryString)
     history.pushState({}, '', `/repos?${queryString}`)
   }
 }
 
 function * watchRepoSearchRequest () {
-  yield debounce(1000, RepoActionType.REPO_SEARCH_REQUEST, repoSearchRequest)
+  if (typeof process !== undefined) {
+    yield takeEvery(RepoActionType.REPO_SEARCH_REQUEST, repoSearchRequest)
+  } else {
+    yield debounce(1000, RepoActionType.REPO_SEARCH_REQUEST, repoSearchRequest)
+  }
 }
 
+// Sinks query updates into querystring
 function * watchUpdateQueryString () {
   yield debounce(250, RepoActionType.REPO_SEARCH_UPDATE_QUERY, updateQueryString)
 }
 
+// Sinks query updates into the above debounce search
 function * watchUpdateQuery () {
-  yield takeLatest(RepoActionType.REPO_SEARCH_UPDATE_QUERY, updateQuery)
+  yield takeLatest(RepoActionType.REPO_SEARCH_UPDATE_QUERY, fireQueryAfterUpdate)
 }
 
 export function * repoSaga () {
