@@ -1,12 +1,12 @@
-import { Repository } from "@/store/repos/types";
-import { AtSignIcon, StarIcon } from "@chakra-ui/icons";
-import { Box, Card, CardBody, CardHeader, Flex, Heading, Spacer, Text } from "@chakra-ui/react";
+import { type Repository } from '@/store/repos/types'
+import { AtSignIcon, StarIcon } from '@chakra-ui/icons'
+import { Box, Card, CardBody, CardHeader, Flex, Heading, Spacer, Text } from '@chakra-ui/react'
 
 const RepoItem: React.FunctionComponent<Repository> = ({
   name,
   stargazers_count,
   description,
-  owner,
+  owner
 }) => (
   <Card w='100%'>
     <CardHeader>
@@ -25,6 +25,6 @@ const RepoItem: React.FunctionComponent<Repository> = ({
       </Text>
     </CardBody>
   </Card>
-);
+)
 
-export default RepoItem;
+export default RepoItem

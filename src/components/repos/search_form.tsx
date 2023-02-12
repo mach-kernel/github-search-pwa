@@ -1,26 +1,26 @@
-import * as repoActions from '@/store/repos/actions';
-import { Repository, SearchRepoQuery } from '@/store/repos/types';
-import { Card, Divider, Heading, IconButton, Input, InputGroup, InputLeftElement, InputRightElement, Select } from '@chakra-ui/react';
-import { CloseIcon, DeleteIcon, SearchIcon, UpDownIcon } from '@chakra-ui/icons';
-import { connect } from 'react-redux';
-import { ActionType } from 'typesafe-actions';
-import { ApplicationState } from '@/store';
+import * as repoActions from '@/store/repos/actions'
+import { type Repository, type SearchRepoQuery } from '@/store/repos/types'
+import { Card, Divider, Heading, IconButton, Input, InputGroup, InputLeftElement, InputRightElement, Select } from '@chakra-ui/react'
+import { CloseIcon, DeleteIcon, SearchIcon, UpDownIcon } from '@chakra-ui/icons'
+import { connect } from 'react-redux'
+import { type ActionType } from 'typesafe-actions'
+import { type ApplicationState } from '@/store'
 
 interface SearchFormStateProps {
-  currentQuery?: Partial<SearchRepoQuery>;
+  currentQuery?: Partial<SearchRepoQuery>
 }
 
 interface SearchFormDispatchProps {
-  updateQuery: (q: Partial<SearchRepoQuery>) => ActionType<typeof repoActions.updateQueryAction>;
-  clearQuery: (...rows: Repository[]) => ActionType<typeof repoActions.clearQuery>;
+  updateQuery: (q: Partial<SearchRepoQuery>) => ActionType<typeof repoActions.updateQueryAction>
+  clearQuery: (...rows: Repository[]) => ActionType<typeof repoActions.clearQuery>
 }
 
 export interface SearchFormUserProps {}
 
-export type SearchFormProps = SearchFormStateProps & SearchFormDispatchProps & SearchFormUserProps;
+export type SearchFormProps = SearchFormStateProps & SearchFormDispatchProps & SearchFormUserProps
 
 const SearchForm: React.FunctionComponent<SearchFormProps> = ({ currentQuery, updateQuery, clearQuery }) => (
-  <Card 
+  <Card
     zIndex={100}
     position='sticky'
     top={0}
@@ -39,31 +39,31 @@ const SearchForm: React.FunctionComponent<SearchFormProps> = ({ currentQuery, up
       />
       <Input
         value={currentQuery?.q ?? ''}
-        placeholder='language:clojure instaparse' 
+        placeholder='language:clojure instaparse'
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => updateQuery({ q: e.target.value, page: 1 }) }
       />
 
-      {currentQuery?.q?.length && 
+      {currentQuery?.q?.length &&
       <InputRightElement
-        children={<IconButton 
+        children={<IconButton
                     onClick={() => {
-                      updateQuery({ q: '' });
-                      clearQuery();
+                      updateQuery({ q: '' })
+                      clearQuery()
                     }}
-                    aria-label='Search database' 
+                    aria-label='Search database'
                     icon={<CloseIcon />}
                   />}
       />}
     </InputGroup>
   </Card>
-);
+)
 
 export default connect<SearchFormStateProps, SearchFormDispatchProps, SearchFormUserProps, ApplicationState>(
   ({ repo }: ApplicationState) => ({ currentQuery: repo.query }),
-  (dispatch) => ({ 
+  (dispatch) => ({
     updateQuery: (
       q: Partial<SearchRepoQuery>
     ) => dispatch(repoActions.updateQueryAction(q)),
-    clearQuery: () => dispatch(repoActions.clearQuery()),
+    clearQuery: () => dispatch(repoActions.clearQuery())
   })
-)(SearchForm);
+)(SearchForm)

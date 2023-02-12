@@ -1,36 +1,36 @@
-import { SearchFormUserProps } from '@/components/repos/search_form';
-import { ApplicationState } from '@/store';
-import { Repository, SearchRepoQuery } from '@/store/repos/types';
-import { Box, Card, Center, Container, Fade, Flex, Skeleton, SlideFade, Text, Spinner, VStack } from '@chakra-ui/react';
-import dynamic from 'next/dynamic';
-import Head from 'next/head';
-import { connect } from 'react-redux';
-import { InView, useInView } from 'react-intersection-observer';
-import { updateQueryAction } from '@/store/repos/actions';
-import { ActionType } from 'typesafe-actions';
+import { type SearchFormUserProps } from '@/components/repos/search_form'
+import { type ApplicationState } from '@/store'
+import { type Repository, type SearchRepoQuery } from '@/store/repos/types'
+import { Box, Card, Center, Container, Fade, Flex, Skeleton, SlideFade, Text, Spinner, VStack } from '@chakra-ui/react'
+import dynamic from 'next/dynamic'
+import Head from 'next/head'
+import { connect } from 'react-redux'
+import { InView, useInView } from 'react-intersection-observer'
+import { updateQueryAction } from '@/store/repos/actions'
+import { type ActionType } from 'typesafe-actions'
 
-const SearchForm = dynamic<SearchFormUserProps>(() => import('@/components/repos/search_form'));
-const RepoItem = dynamic(() => import('@/components/repos/repo_item'));
+const SearchForm = dynamic<SearchFormUserProps>(async () => await import('@/components/repos/search_form'))
+const RepoItem = dynamic(async () => await import('@/components/repos/repo_item'))
 
 interface IndexDispatchProps {
-  updateQuery: (q: Partial<SearchRepoQuery>) => ActionType<typeof updateQueryAction>;
+  updateQuery: (q: Partial<SearchRepoQuery>) => ActionType<typeof updateQueryAction>
 }
 
 interface IndexStateProps {
-  loading: boolean,
-  rows: Repository[],
-  total: number,
-  query?: Partial<SearchRepoQuery>,
+  loading: boolean
+  rows: Repository[]
+  total: number
+  query?: Partial<SearchRepoQuery>
 }
 
-export type IndexProps = IndexDispatchProps & IndexStateProps;
+export type IndexProps = IndexDispatchProps & IndexStateProps
 
 const Index: React.FunctionComponent<IndexProps> = ({ loading, rows, total, query, updateQuery }) => (
   <>
     <Head>
       <title>Repo Search</title>
     </Head>
-    
+
     <Container maxW='container.xl' marginTop='2rem' alignItems='center'>
       <SearchForm />
       <SlideFade in={rows.length > 0} dir='top'>
@@ -46,23 +46,24 @@ const Index: React.FunctionComponent<IndexProps> = ({ loading, rows, total, quer
           <Spinner mt={6} mb={6} alignSelf='center' size='xl' />
         </Center>
       </Fade>
-      <InView initialInView={false} 
-              onChange={(iv, e) => { if (iv && rows.length) 
-                                      updateQuery({ ...query, page: (query?.page ?? 1) + 1 }); }} /> 
+      <InView initialInView={false}
+              onChange={(iv, e) => {
+                if (iv && (rows.length > 0)) { updateQuery({ ...query, page: (query?.page ?? 1) + 1 }) }
+              }} />
     </Container>
   </>
 )
 
 export default connect(
-  ({ repo }: ApplicationState) => ({ 
+  ({ repo }: ApplicationState) => ({
     loading: repo.loading,
-    rows: repo.rows, 
+    rows: repo.rows,
     total: repo.total,
     query: repo.query
   }),
-  (dispatch) => ({ 
+  (dispatch) => ({
     updateQuery: (
       q: Partial<SearchRepoQuery>
-    ) => dispatch(updateQueryAction(q)),
+    ) => dispatch(updateQueryAction(q))
   })
-)(Index);
+)(Index)
